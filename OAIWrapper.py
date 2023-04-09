@@ -19,11 +19,11 @@ class OAIWrapper():
         self.completion_config = {}
         self.chat_completion_config = {}
         self._load_config_from_file(config_file)
-        self.completion_encoding = tiktoken.encoding_for_model(
-            self.completion_config["engine"]
+        self.completion_encoding = tiktoken.get_encoding(
+            self.completion_config["encoding"]
         )
-        self.chat_completion_encoding = tiktoken.encoding_for_model(
-            self.chat_completion_config["model"]
+        self.chat_completion_encoding = tiktoken.get_encoding(
+            self.chat_completion_config["encoding"]
         )
 
     def _load_config_from_file(self, config_file: str = "config/config.yaml"):
