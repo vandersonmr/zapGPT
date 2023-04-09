@@ -19,11 +19,11 @@ class OAIWrapper():
         self.completion_config = {}
         self.chat_completion_config = {}
         self._load_config_from_file(config_file)
-        self.completion_encoding = tiktoken.encoding_for_model(
-            self.completion_config["engine"]
+        self.completion_encoding = tiktoken.get_encoding(
+            self.completion_config["encoding"]
         )
-        self.chat_completion_encoding = tiktoken.encoding_for_model(
-            self.chat_completion_config["model"]
+        self.chat_completion_encoding = tiktoken.get_encoding(
+            self.chat_completion_config["encoding"]
         )
 
     def _load_config_from_file(self, config_file: str = "config/config.yaml"):
@@ -50,18 +50,18 @@ class OAIWrapper():
         assert kind in ["completion", "chatCompletion"], f"Invalid kind: {kind}"
 
         if kind == "completion":
-            kwargs = self.completion_config
+            kwargs = self.completion_config["kwargs"]
             kwargs["prompt"] = prompt
             method = openai.Completion.create
-            max_tokens = self.completion_config["max_tokens"]
+            max_tokens = self.completion_config["kwargs"]["max_tokens"]
         elif kind == "chatCompletion":
-            kwargs = self.chat_completion_config
+            kwargs = self.chat_completion_config["kwargs"]
             kwargs["messages"] = [{
                 "role": "user",
                 "content": prompt
             }]
             method = openai.ChatCompletion.create
-            max_tokens = self.chat_completion_config["max_tokens"]
+            max_tokens = self.chat_completion_config["kwargs"]["max_tokens"]
 
         # Try to count tokens before calling the API
         try:
